@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Marketing Manager OS</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;
+  --surface:#111;
+  --surface2:#1a1a1a;
+  --border:#222;
+  --border2:#2e2e2e;
+  --text:#f5f5f5;
+  --muted:#666;
+  --muted2:#444;
+  --accent:#e8ff47;
+  --accent-dark:#b8cc30;
+  --red:#ff3c3c;
+  --orange:#ff8c42;
+  --green:#3cffa0;
+  --blue:#42b4ff;
+  --purple:#b47fff;
+  --pink:#ff6eb4;
+  --sidebar:230px;
+  --radius:4px;
+}
+*{scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;min-height:100vh;display:flex;}
+
+/* SIDEBAR */
+aside{width:var(--sidebar);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;z-index:50;}
+.logo-block{padding:24px 20px 20px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.logo-word{font-size:17px;font-weight:800;line-height:1.2;letter-spacing:-.03em;}
+.logo-word span{color:var(--accent);}
+.nav{padding:16px 10px;flex:1;}
+.nav-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2);padding:0 8px;margin:14px 0 5px;}
+.nav-label:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--muted);font-size:12px;font-weight:500;transition:all .1s;margin-bottom:1px;user-select:none;}
+.nav-item:hover{color:var(--text);background:var(--surface2);}
+.nav-item.active{color:var(--accent);background:rgba(232,255,71,.06);}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);flex-shrink:0;}
+.nav-item.active .nav-dot{background:var(--accent);}
+.sidebar-foot{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0;}
+.sidebar-foot p{font-size:10px;color:var(--muted);line-height:1.6;}
+
+/* MAIN */
+main{margin-left:var(--sidebar);flex:1;min-height:100vh;}
+.topbar{padding:18px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:40;}
+.topbar-left{}
+.tb-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.tb-title{font-size:22px;font-weight:800;letter-spacing:-.04em;}
+.tb-title span{color:var(--accent);}
+.topbar-right{display:flex;gap:10px;align-items:center;}
+.badge{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 11px;border-radius:2px;background:var(--surface2);color:var(--muted);border:1px solid var(--border2);}
+
+/* CONTENT AREA */
+.content{padding:24px 32px;display:none;}
+.content.active{display:block;}
+
+/* SECTION TITLE */
+.section-eyebrow{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.section-title{font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px;}
+.section-title span{color:var(--accent);}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+
+/* STAT GRID */
+.stat-grid{display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+.stat-grid.cols2{grid-template-columns:repeat(2,1fr);}
+.stat-grid.cols3{grid-template-columns:repeat(3,1fr);}
+.stat-grid.cols4{grid-template-columns:repeat(4,1fr);}
+.stat-grid.cols6{grid-template-columns:repeat(6,1fr);}
+.stat-cell{background:var(--surface);padding:18px 20px;}
+.stat-cell .sc-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-cell input.sc-val{font-size:22px;font-weight:800;letter-spacing:-.04em;color:var(--text);background:none;border:none;outline:none;width:100%;color:inherit;}
+.stat-cell .sc-val-display{font-size:22px;font-weight:800;letter-spacing:-.04em;}
+.stat-cell .sc-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+.stat-cell.accent .sc-val-display{color:var(--accent);}
+.stat-cell.green .sc-val-display{color:var(--green);}
+.stat-cell.red .sc-val-display{color:var(--red);}
+.stat-cell.blue .sc-val-display{color:var(--blue);}
+.stat-cell.orange .sc-val-display{color:var(--orange);}
+.stat-cell.purple .sc-val-display{color:var(--purple);}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+.card-head{padding:13px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-head-l{display:flex;flex-direction:column;gap:2px;}
+.ch-eye{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.ch-title{font-size:13px;font-weight:700;letter-spacing:-.01em;}
+.card-body{padding:0;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:600px;}
+th{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 16px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface);}
+td{padding:10px 16px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface2);}
+td input,td select{background:none;border:none;outline:none;color:var(--text);font-size:12px;width:100%;font-family:inherit;cursor:text;}
+td select{cursor:pointer;}
+td select option{background:var(--surface2);}
+.empty-row td{text-align:center;color:var(--muted);padding:32px;font-size:12px;}
+
+/* PILL */
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+.pill.green{background:rgba(60,255,160,.08);color:var(--green);}
+.pill.red{background:rgba(255,60,60,.1);color:var(--red);}
+.pill.orange{background:rgba(255,140,66,.1);color:var(--orange);}
+.pill.blue{background:rgba(66,180,255,.1);color:var(--blue);}
+.pill.purple{background:rgba(180,127,255,.1);color:var(--purple);}
+.pill.accent{background:rgba(232,255,71,.08);color:var(--accent);}
+.pill.muted{background:var(--surface2);color:var(--muted);}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:#0a0a0a;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:9px 18px;border-radius:var(--radius);border:none;cursor:pointer;transition:all .1s;}
+.btn:hover{background:var(--accent-dark);}
+.btn:active{transform:scale(.98);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+.btn-sm{padding:6px 13px;font-size:10px;}
+.btn-danger{background:rgba(255,60,60,.1);color:var(--red);border:1px solid rgba(255,60,60,.2);}
+.btn-danger:hover{background:rgba(255,60,60,.2);}
+
+/* FORM */
+.form-grid{display:grid;gap:14px;}
+.form-grid.g2{grid-template-columns:1fr 1fr;}
+.form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.fg input,.fg select,.fg textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:13px;padding:9px 12px;outline:none;transition:border .1s;font-family:inherit;width:100%;-webkit-appearance:none;}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='none' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;cursor:pointer;}
+.fg select option{background:var(--surface2);}
+.fg textarea{resize:vertical;min-height:80px;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);}
+
+/* ACTION ROW */
+.action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:16px 20px;border-top:1px solid var(--border);}
+
+/* SCORE */
+.score-section{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.score-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;}
+.score-item-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;}
+.score-item-track{height:6px;background:var(--surface2);border-radius:3px;margin-bottom:8px;overflow:hidden;}
+.score-item-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .4s ease;}
+.score-item-row{display:flex;justify-content:space-between;align-items:center;}
+.score-item-val{font-size:20px;font-weight:800;letter-spacing:-.04em;}
+.score-item-max{font-size:12px;color:var(--muted);}
+.score-range{display:flex;gap:6px;margin-top:10px;}
+.score-range button{flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);font-size:11px;font-weight:600;padding:5px;border-radius:2px;cursor:pointer;transition:all .1s;}
+.score-range button:hover{border-color:var(--accent);color:var(--accent);}
+.score-range button.sel{background:rgba(232,255,71,.08);border-color:var(--accent);color:var(--accent);}
+
+/* TOTAL SCORE */
+.total-score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:16px;display:flex;align-items:center;gap:32px;}
+.total-score-num{font-size:80px;font-weight:800;letter-spacing:-.06em;line-height:1;}
+.total-score-right{}
+.total-score-label{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;}
+.total-score-sub{font-size:13px;color:var(--muted);line-height:1.6;max-width:400px;}
+.total-score-bar{height:8px;background:var(--surface2);border-radius:4px;margin-top:16px;overflow:hidden;max-width:400px;}
+.total-score-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .5s ease;}
+
+/* WIN WALL */
+.wins-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:20px;}
+.win-card{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px 18px;position:relative;}
+.win-card .win-tag{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:700;}
+.win-card .win-text{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.45;}
+.win-card .win-context{font-size:11px;color:var(--muted);margin-top:6px;}
+.win-card .win-del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:2px;}
+.win-card .win-del:hover{color:var(--red);background:rgba(255,60,60,.08);}
+.win-empty{padding:48px;text-align:center;color:var(--muted);}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.cal-header{background:var(--surface2);padding:8px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.cal-day{background:var(--surface);padding:8px;min-height:80px;cursor:pointer;transition:background .1s;}
+.cal-day:hover{background:var(--surface2);}
+.cal-day .day-num{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+.cal-day .day-dot{width:6px;height:6px;border-radius:50%;margin-bottom:2px;}
+.cal-day.today .day-num{color:var(--accent);font-weight:800;}
+.cal-day.other-month .day-num{color:var(--muted2);}
+.cal-dot-ig{background:var(--pink);}
+.cal-dot-li{background:var(--blue);}
+.cal-dot-yt{background:var(--red);}
+.cal-dot-em{background:var(--orange);}
+.cal-dot-bl{background:var(--purple);}
+
+/* INFLUENCER */
+.inf-stars{color:var(--accent);font-size:12px;letter-spacing:1px;}
+
+/* REPORT */
+.report-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;}
+.report-block h3{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.report-block textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:13px;padding:12px;outline:none;width:100%;resize:vertical;min-height:100px;font-family:inherit;line-height:1.6;}
+.report-block textarea:focus{border-color:var(--accent);}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:11px 16px;font-size:12px;font-weight:600;color:var(--text);display:none;z-index:999;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:24px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-head h2{font-size:16px;font-weight:800;letter-spacing:-.02em;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:2px;}
+.modal-close:hover{color:var(--text);background:var(--surface2);}
+.modal-form{display:flex;flex-direction:column;gap:13px;}
+.modal-actions{display:flex;gap:10px;margin-top:6px;}
+
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+@media(max-width:768px){
+  aside{display:none;}
+  main{margin-left:0;}
+  .content{padding:16px;}
+  .topbar{padding:16px;}
+  .stat-grid.cols4,.stat-grid.cols6{grid-template-columns:repeat(2,1fr);}
+  .stat-grid.cols3{grid-template-columns:1fr 1fr;}
+  .form-grid.g2,.form-grid.g3{grid-template-columns:1fr;}
+  .score-section{grid-template-columns:1fr;}
+  .wins-grid{grid-template-columns:1fr;}
+  .total-score-card{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="logo-block">
+    <div class="logo-eyebrow">@workingirl.vlog</div>
+    <div class="logo-word">Marketing<br><span>Manager OS</span></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="nav('dashboard')"><span class="nav-dot"></span>Dashboard</div>
+    <div class="nav-label">Command</div>
+    <div class="nav-item" onclick="nav('campaigns')"><span class="nav-dot"></span>Campaign Command</div>
+    <div class="nav-item" onclick="nav('content')"><span class="nav-dot"></span>Content OS</div>
+    <div class="nav-item" onclick="nav('budget')"><span class="nav-dot"></span>Budget Tracker</div>
+    <div class="nav-label">Manage</div>
+    <div class="nav-item" onclick="nav('projects')"><span class="nav-dot"></span>Project Manager</div>
+    <div class="nav-item" onclick="nav('meetings')"><span class="nav-dot"></span>Meeting HQ</div>
+    <div class="nav-item" onclick="nav('influencers')"><span class="nav-dot"></span>Influencer DB</div>
+    <div class="nav-label">Growth</div>
+    <div class="nav-item" onclick="nav('wins')"><span class="nav-dot"></span>Win Wall</div>
+    <div class="nav-item" onclick="nav('reports')"><span class="nav-dot"></span>Monthly Report</div>
+    <div class="nav-item" onclick="nav('career')"><span class="nav-dot"></span>Career Dashboard</div>
+    <div class="nav-item" onclick="nav('scorecard')"><span class="nav-dot"></span>CEO Scorecard</div>
+  </nav>
+  <div class="sidebar-foot">
+    <p>Built for marketing managers.<br>@workingirl.vlog</p>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tb-eyebrow">Marketing Manager OS</div>
+      <div class="tb-title" id="topbar-title">Dashboard <span>↗</span></div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge" id="topbar-month"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- DASHBOARD -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content active" id="page-dashboard">
+    <div class="section-eyebrow">Overview</div>
+    <div class="section-title">This Month <span>At A Glance</span></div>
+    <div class="section-sub">Your marketing command centre. Update numbers as you go.</div>
+
+    <div class="stat-grid cols3" style="margin-bottom:12px;">
+      <div class="stat-cell accent">
+        <div class="sc-label">Campaigns Live</div>
+        <input class="sc-val" type="number" id="db-campaigns" value="0" min="0"/>
+        <div class="sc-sub">active this month</div>
+      </div>
+      <div class="stat-cell green">
+        <div class="sc-label">Leads Generated</div>
+        <input class="sc-val" type="number" id="db-leads" value="0"/>
+        <div class="sc-sub">total leads</div>
+      </div>
+      <div class="stat-cell blue">
+        <div class="sc-label">Budget Spent (₹)</div>
+        <input class="sc-val" type="number" id="db-budget" value="0"/>
+        <div class="sc-sub">this month</div>
+      </div>
+    </div>
+    <div class="stat-grid cols3">
+      <div class="stat-cell orange">
+        <div class="sc-label">Revenue Influenced (₹)</div>
+        <input class="sc-val" type="number" id="db-revenue" value="0"/>
+        <div class="sc-sub">attributed to marketing</div>
+      </div>
+      <div class="stat-cell purple">
+        <div class="sc-label">Team Capacity %</div>
+        <input class="sc-val" type="number" id="db-capacity" value="0" min="0" max="100"/>
+        <div class="sc-sub">% of bandwidth used</div>
+      </div>
+      <div class="stat-cell red">
+        <div class="sc-label">Upcoming Launches</div>
+        <input class="sc-val" type="number" id="db-launches" value="0" min="0"/>
+        <div class="sc-sub">next 30 days</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Quick links</div><div class="ch-title">Jump to a module</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);">
+        <div onclick="nav('campaigns')" style="background:var(--surface);padding:20px;cursor:pointer;transition:background .1s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:20px;margin-bottom:8px;">🎯</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">Campaign Command</div>
+          <div style="font-size:11px;color:var(--muted);">Track campaigns end-to-end</div>
+        </div>
+        <div onclick="nav('content')" style="background:var(--surface);padding:20px;cursor:pointer;transition:background .1s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:20px;margin-bottom:8px;">📅</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">Content OS</div>
+          <div style="font-size:11px;color:var(--muted);">Content calendar + tracking</div>
+        </div>
+        <div onclick="nav('budget')" style="background:var(--surface);padding:20px;cursor:pointer;transition:background .1s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:20px;margin-bottom:8px;">💰</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">Budget Tracker</div>
+          <div style="font-size:11px;color:var(--muted);">Spend, CPL, ROI auto-calc</div>
+        </div>
+        <div onclick="nav('wins')" style="background:var(--surface);padding:20px;cursor:pointer;transition:background .1s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:20px;margin-bottom:8px;">🏆</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px;">Win Wall</div>
+          <div style="font-size:11px;color:var(--muted);">Your appraisal ammunition</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- CAMPAIGNS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-campaigns">
+    <div class="section-eyebrow">Command Center</div>
+    <div class="section-title">Campaign <span>Command</span></div>
+    <div class="section-sub">Track every campaign from idea to execution.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">All campaigns</div><div class="ch-title">Active & Pipeline</div></div>
+        <button class="btn btn-sm" onclick="openModal('campaign-modal')">+ Add Campaign</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Campaign</th><th>Objective</th><th>Audience</th><th>Budget ₹</th>
+              <th>Timeline</th><th>Status</th><th>Reach</th><th>Leads</th><th>CPL ₹</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="campaign-tbody">
+            <tr class="empty-row"><td colspan="10">No campaigns yet. Add your first campaign ↑</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- CONTENT OS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-content">
+    <div class="section-eyebrow">Content Operating System</div>
+    <div class="section-title">Content <span>Calendar</span></div>
+    <div class="section-sub">Plan, track, and measure every piece of content across all channels.</div>
+
+    <div class="stat-grid cols5" style="grid-template-columns:repeat(5,1fr);margin-bottom:16px;">
+      <div class="stat-cell" style="text-align:center;">
+        <div class="sc-label" style="color:var(--pink);">Instagram</div>
+        <div class="sc-val-display" id="ct-ig">0</div>
+        <div class="sc-sub">pieces this month</div>
+      </div>
+      <div class="stat-cell" style="text-align:center;">
+        <div class="sc-label" style="color:var(--blue);">LinkedIn</div>
+        <div class="sc-val-display" id="ct-li">0</div>
+        <div class="sc-sub">pieces this month</div>
+      </div>
+      <div class="stat-cell" style="text-align:center;">
+        <div class="sc-label" style="color:var(--red);">YouTube</div>
+        <div class="sc-val-display" id="ct-yt">0</div>
+        <div class="sc-sub">pieces this month</div>
+      </div>
+      <div class="stat-cell" style="text-align:center;">
+        <div class="sc-label" style="color:var(--purple);">Blog</div>
+        <div class="sc-val-display" id="ct-bl">0</div>
+        <div class="sc-sub">pieces this month</div>
+      </div>
+      <div class="stat-cell" style="text-align:center;">
+        <div class="sc-label" style="color:var(--orange);">Email</div>
+        <div class="sc-val-display" id="ct-em">0</div>
+        <div class="sc-sub">pieces this month</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Content tracker</div><div class="ch-title">All content pieces</div></div>
+        <button class="btn btn-sm" onclick="openModal('content-modal')">+ Add Content</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Topic</th><th>Channel</th><th>Format</th><th>Owner</th>
+              <th>Publish Date</th><th>CTA</th><th>Status</th><th>Performance</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="content-tbody">
+            <tr class="empty-row"><td colspan="9">No content planned yet. Add your first piece ↑</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- BUDGET -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-budget">
+    <div class="section-eyebrow">Finance</div>
+    <div class="section-title">Marketing <span>Budget</span></div>
+    <div class="section-sub">Track spend by channel. ROI, CPL and utilisation calculated automatically.</div>
+
+    <div class="stat-grid cols4" style="margin-bottom:16px;">
+      <div class="stat-cell accent">
+        <div class="sc-label">Total Budget ₹</div>
+        <div class="sc-val-display" id="bud-total">0</div>
+        <div class="sc-sub">this month</div>
+      </div>
+      <div class="stat-cell red">
+        <div class="sc-label">Total Spent ₹</div>
+        <div class="sc-val-display" id="bud-spent">0</div>
+        <div class="sc-sub">so far</div>
+      </div>
+      <div class="stat-cell orange">
+        <div class="sc-label">Utilisation %</div>
+        <div class="sc-val-display" id="bud-util">0%</div>
+        <div class="sc-sub">of budget used</div>
+      </div>
+      <div class="stat-cell green">
+        <div class="sc-label">Remaining ₹</div>
+        <div class="sc-val-display" id="bud-rem">0</div>
+        <div class="sc-sub">left to spend</div>
+      </div>
+    </div>
+
+    <div class="stat-grid cols3" style="margin-bottom:16px;">
+      <div class="stat-cell blue">
+        <div class="sc-label">Total Leads</div>
+        <input class="sc-val" type="number" id="bud-leads" value="0" oninput="calcBudget()"/>
+        <div class="sc-sub">for CPL calc</div>
+      </div>
+      <div class="stat-cell purple">
+        <div class="sc-label">Cost Per Lead ₹</div>
+        <div class="sc-val-display" id="bud-cpl">—</div>
+        <div class="sc-sub">auto-calculated</div>
+      </div>
+      <div class="stat-cell accent">
+        <div class="sc-label">Revenue Influenced ₹</div>
+        <input class="sc-val" type="number" id="bud-revenue-inp" value="0" oninput="calcBudget()"/>
+        <div class="sc-sub">for ROI calc</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Channel breakdown</div><div class="ch-title">Budget by channel</div></div>
+        <button class="btn btn-sm" onclick="openModal('budget-modal')">+ Add Line</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Channel</th><th>Allocated ₹</th><th>Spent ₹</th><th>Utilisation</th><th>Notes</th><th></th></tr>
+          </thead>
+          <tbody id="budget-tbody">
+            <tr class="empty-row"><td colspan="6">No budget lines yet. Add channels ↑</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PROJECTS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-projects">
+    <div class="section-eyebrow">Project Manager</div>
+    <div class="section-title">Active <span>Projects</span></div>
+    <div class="section-sub">Track priority, progress, deadlines and risks in one place.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">All projects</div><div class="ch-title">Board</div></div>
+        <button class="btn btn-sm" onclick="openModal('project-modal')">+ Add Project</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Project</th><th>Priority</th><th>Owner</th><th>Due Date</th><th>Progress</th><th>Dependencies</th><th>Risks</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody id="project-tbody">
+            <tr class="empty-row"><td colspan="9">No projects yet. Add your first one ↑</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- MEETINGS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-meetings">
+    <div class="section-eyebrow">Meeting HQ</div>
+    <div class="section-title">Meeting <span>Log</span></div>
+    <div class="section-sub">Track decisions, action items and stakeholders from every meeting.</div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">New meeting</div><div class="ch-title">Log a meeting</div></div>
+      </div>
+      <div class="card-body" style="padding:20px;">
+        <div class="form-grid g2" style="margin-bottom:12px;">
+          <div class="fg"><label>Meeting Title</label><input type="text" id="meet-title" placeholder="e.g. Weekly Marketing Sync"/></div>
+          <div class="fg"><label>Date</label><input type="date" id="meet-date"/></div>
+        </div>
+        <div class="fg" style="margin-bottom:12px;"><label>Stakeholders</label><input type="text" id="meet-stakeholders" placeholder="e.g. Marketing, Sales, Leadership"/></div>
+        <div class="fg" style="margin-bottom:12px;"><label>Agenda</label><textarea id="meet-agenda" placeholder="What was discussed..."></textarea></div>
+        <div class="form-grid g2" style="margin-bottom:12px;">
+          <div class="fg"><label>Decisions Made</label><textarea id="meet-decisions" placeholder="Key decisions..."></textarea></div>
+          <div class="fg"><label>Action Items</label><textarea id="meet-actions" placeholder="Who does what by when..."></textarea></div>
+        </div>
+        <button class="btn" onclick="saveMeeting()">Save Meeting →</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">History</div><div class="ch-title">All meetings</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Meeting</th><th>Stakeholders</th><th>Decisions</th><th>Action Items</th><th></th></tr></thead>
+          <tbody id="meeting-tbody"><tr class="empty-row"><td colspan="6">No meetings logged yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- INFLUENCERS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-influencers">
+    <div class="section-eyebrow">Influencer Management</div>
+    <div class="section-title">Influencer <span>Database</span></div>
+    <div class="section-sub">Track every creator, their metrics, deliverables and campaign status.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">All influencers</div><div class="ch-title">Creator roster</div></div>
+        <button class="btn btn-sm" onclick="openModal('influencer-modal')">+ Add Influencer</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Niche</th><th>Followers</th><th>Eng. Rate</th><th>Cost ₹</th><th>Deliverables</th><th>Status</th><th>Rating</th><th></th></tr></thead>
+          <tbody id="influencer-tbody"><tr class="empty-row"><td colspan="9">No influencers yet. Add your first creator ↑</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- WIN WALL -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-wins">
+    <div class="section-eyebrow">Career Ammo</div>
+    <div class="section-title">Win <span>Wall</span></div>
+    <div class="section-sub">Track every measurable achievement. Use this during appraisals, promotions, interviews and salary negotiations.</div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Add a win</div><div class="ch-title">Log your achievement</div></div>
+      </div>
+      <div class="card-body" style="padding:20px;">
+        <div class="form-grid g3" style="margin-bottom:12px;">
+          <div class="fg" style="grid-column:span 2;"><label>Win (be specific and measurable)</label><input type="text" id="win-text" placeholder="e.g. Reduced CPL by 32% through audience restructuring"/></div>
+          <div class="fg"><label>Category</label>
+            <select id="win-cat">
+              <option>Lead Generation</option><option>Cost Reduction</option>
+              <option>Revenue Impact</option><option>Campaign Performance</option>
+              <option>Team Management</option><option>Process Improvement</option>
+              <option>Brand Building</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:12px;"><label>Context (optional — what was the situation?)</label><input type="text" id="win-context" placeholder="e.g. Q3 2024 · Meta Ads campaign for Nitesh Land launch"/></div>
+        <button class="btn" onclick="addWin()">Add to Wall →</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Your wins</div><div class="ch-title" id="wins-count-label">0 wins logged</div></div>
+        <button class="btn btn-sm btn-ghost" onclick="copyWins()">Copy all wins</button>
+      </div>
+      <div id="wins-grid" class="wins-grid">
+        <div class="win-empty"><p>No wins yet. Add your first one above.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- REPORTS -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-reports">
+    <div class="section-eyebrow">Leadership Reporting</div>
+    <div class="section-title">Monthly <span>Report</span></div>
+    <div class="section-sub">Write your monthly report. Export as text to paste into email or slides.</div>
+
+    <div class="report-block">
+      <h3>Report period</h3>
+      <div class="form-grid g2">
+        <div class="fg"><label>Month</label><input type="month" id="report-month"/></div>
+        <div class="fg"><label>Prepared by</label><input type="text" id="report-by" placeholder="Your name / team"/></div>
+      </div>
+    </div>
+    <div class="report-block"><h3>Campaign Performance</h3><textarea id="rep-campaigns" placeholder="Summarise campaign results this month..."></textarea></div>
+    <div class="report-block"><h3>Lead Generation</h3><textarea id="rep-leads" placeholder="Total leads, sources, quality..."></textarea></div>
+    <div class="report-block"><h3>Budget Utilisation</h3><textarea id="rep-budget" placeholder="Spend vs budget, channel breakdown..."></textarea></div>
+    <div class="report-block"><h3>Channel Performance</h3><textarea id="rep-channels" placeholder="Social, email, paid, organic..."></textarea></div>
+    <div class="report-block"><h3>Key Wins</h3><textarea id="rep-wins" placeholder="Top 3–5 wins this month..."></textarea></div>
+    <div class="report-block"><h3>Learnings</h3><textarea id="rep-learnings" placeholder="What worked, what didn't..."></textarea></div>
+    <div class="report-block"><h3>Next Month Priorities</h3><textarea id="rep-next" placeholder="Top priorities for next month..."></textarea></div>
+
+    <div style="display:flex;gap:12px;margin-top:4px;">
+      <button class="btn" onclick="exportReport()">Export Report →</button>
+      <button class="btn btn-ghost" onclick="copyReport()">Copy to clipboard</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- CAREER -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-career">
+    <div class="section-eyebrow">Career Development</div>
+    <div class="section-title">Career <span>Dashboard</span></div>
+    <div class="section-sub">Track your professional growth, certifications, and promotion goals.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Certifications & learning</div><div class="ch-title">Credentials tracker</div></div>
+        <button class="btn btn-sm" onclick="openModal('cert-modal')">+ Add</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Certification / Course</th><th>Platform</th><th>Status</th><th>Completed</th><th>Relevance</th><th></th></tr></thead>
+          <tbody id="cert-tbody"><tr class="empty-row"><td colspan="6">No certifications yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l"><div class="ch-eye">Goals</div><div class="ch-title">Promotion & salary targets</div></div>
+      </div>
+      <div class="card-body" style="padding:20px;">
+        <div class="form-grid g3" style="margin-bottom:14px;">
+          <div class="fg"><label>Current Role</label><input type="text" id="career-role" placeholder="Deputy Manager – Marketing"/></div>
+          <div class="fg"><label>Target Role</label><input type="text" id="career-target-role" placeholder="Marketing Manager"/></div>
+          <div class="fg"><label>Target Date</label><input type="month" id="career-target-date"/></div>
+        </div>
+        <div class="form-grid g3" style="margin-bottom:14px;">
+          <div class="fg"><label>Current CTC ₹ LPA</label><input type="number" id="career-ctc" placeholder="12"/></div>
+          <div class="fg"><label>Target CTC ₹ LPA</label><input type="number" id="career-target-ctc" placeholder="20"/></div>
+          <div class="fg"><label>LinkedIn Followers</label><input type="number" id="career-linkedin" placeholder="0"/></div>
+        </div>
+        <div class="fg"><label>What I need to get there</label><textarea id="career-plan" placeholder="Skills, visibility, results, relationships..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCORECARD -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="content" id="page-scorecard">
+    <div class="section-eyebrow">Monthly Self-Assessment</div>
+    <div class="section-title">Marketing CEO <span>Scorecard</span></div>
+    <div class="section-sub">Score yourself honestly each month. Track progress over time.</div>
+
+    <div class="total-score-card">
+      <div class="total-score-num" id="score-total" style="color:var(--accent);">0</div>
+      <div class="total-score-right">
+        <div class="total-score-label" id="score-total-label">Score yourself below</div>
+        <div class="total-score-sub" id="score-total-sub">Rate yourself across 7 dimensions. The score updates as you go.</div>
+        <div class="total-score-bar"><div class="total-score-fill" id="score-total-fill" style="width:0%;"></div></div>
+      </div>
+    </div>
+
+    <div class="score-section" id="score-section">
+      <!-- generated by JS -->
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Campaign Modal -->
+<div class="modal-overlay" id="campaign-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Campaign</h2><button class="modal-close" onclick="closeModal('campaign-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="fg"><label>Campaign Name</label><input type="text" id="cm-name" placeholder="e.g. Q3 Lead Gen — Meta"/></div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Objective</label>
+          <select id="cm-obj"><option>Lead Generation</option><option>Brand Awareness</option><option>Conversions</option><option>Engagement</option><option>Traffic</option><option>Retention</option></select>
+        </div>
+        <div class="fg"><label>Target Audience</label><input type="text" id="cm-audience" placeholder="e.g. HNIs, 35–55, Bengaluru"/></div>
+      </div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Budget ₹</label><input type="number" id="cm-budget" placeholder="500000"/></div>
+        <div class="fg"><label>Timeline</label><input type="text" id="cm-timeline" placeholder="e.g. Jun 1 – Jun 30"/></div>
+      </div>
+      <div class="form-grid g3">
+        <div class="fg"><label>Status</label>
+          <select id="cm-status"><option>Planning</option><option>Live</option><option>Paused</option><option>Completed</option><option>Cancelled</option></select>
+        </div>
+        <div class="fg"><label>Reach</label><input type="number" id="cm-reach" placeholder="0"/></div>
+        <div class="fg"><label>Leads</label><input type="number" id="cm-leads" placeholder="0"/></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addCampaign()">Add Campaign →</button>
+        <button class="btn btn-ghost" onclick="closeModal('campaign-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content Modal -->
+<div class="modal-overlay" id="content-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Content</h2><button class="modal-close" onclick="closeModal('content-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="fg"><label>Content Topic</label><input type="text" id="co-topic" placeholder="e.g. Dussehra campaign reel"/></div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Channel</label>
+          <select id="co-channel"><option>Instagram</option><option>LinkedIn</option><option>YouTube</option><option>Blog</option><option>Email Marketing</option></select>
+        </div>
+        <div class="fg"><label>Format</label>
+          <select id="co-format"><option>Reel</option><option>Carousel</option><option>Static Post</option><option>Story</option><option>Video</option><option>Article</option><option>Newsletter</option><option>Short</option></select>
+        </div>
+      </div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Owner</label><input type="text" id="co-owner" placeholder="Name / team"/></div>
+        <div class="fg"><label>Publish Date</label><input type="date" id="co-date"/></div>
+      </div>
+      <div class="form-grid g2">
+        <div class="fg"><label>CTA</label><input type="text" id="co-cta" placeholder="e.g. DM us, Book a call, Link in bio"/></div>
+        <div class="fg"><label>Status</label>
+          <select id="co-status"><option>Idea</option><option>In Progress</option><option>Review</option><option>Scheduled</option><option>Published</option></select>
+        </div>
+      </div>
+      <div class="fg"><label>Performance Notes</label><input type="text" id="co-perf" placeholder="e.g. 45K reach, 3.2% ER"/></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addContent()">Add Content →</button>
+        <button class="btn btn-ghost" onclick="closeModal('content-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Budget Modal -->
+<div class="modal-overlay" id="budget-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Budget Line</h2><button class="modal-close" onclick="closeModal('budget-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="fg"><label>Channel</label>
+        <select id="bm-channel"><option>Meta Ads</option><option>Google Ads</option><option>Influencers</option><option>Agency Costs</option><option>Design Costs</option><option>Production Costs</option><option>Events</option><option>PR</option><option>Other</option></select>
+      </div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Allocated ₹</label><input type="number" id="bm-allocated" placeholder="0"/></div>
+        <div class="fg"><label>Spent ₹</label><input type="number" id="bm-spent" placeholder="0"/></div>
+      </div>
+      <div class="fg"><label>Notes</label><input type="text" id="bm-notes" placeholder="Optional notes"/></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addBudgetLine()">Add Line →</button>
+        <button class="btn btn-ghost" onclick="closeModal('budget-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Project Modal -->
+<div class="modal-overlay" id="project-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Project</h2><button class="modal-close" onclick="closeModal('project-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="fg"><label>Project Name</label><input type="text" id="pr-name" placeholder="e.g. New website launch"/></div>
+      <div class="form-grid g3">
+        <div class="fg"><label>Priority</label>
+          <select id="pr-priority"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+        </div>
+        <div class="fg"><label>Owner</label><input type="text" id="pr-owner" placeholder="Name"/></div>
+        <div class="fg"><label>Due Date</label><input type="date" id="pr-due"/></div>
+      </div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Progress %</label><input type="number" id="pr-progress" placeholder="0" min="0" max="100"/></div>
+        <div class="fg"><label>Status</label>
+          <select id="pr-status"><option>Not Started</option><option>In Progress</option><option>On Hold</option><option>Completed</option><option>At Risk</option></select>
+        </div>
+      </div>
+      <div class="fg"><label>Dependencies</label><input type="text" id="pr-deps" placeholder="e.g. Design approval, Dev handoff"/></div>
+      <div class="fg"><label>Risks</label><input type="text" id="pr-risks" placeholder="e.g. Vendor delay, Budget approval"/></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addProject()">Add Project →</button>
+        <button class="btn btn-ghost" onclick="closeModal('project-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Influencer Modal -->
+<div class="modal-overlay" id="influencer-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Influencer</h2><button class="modal-close" onclick="closeModal('influencer-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="form-grid g2">
+        <div class="fg"><label>Name / Handle</label><input type="text" id="inf-name" placeholder="@handle"/></div>
+        <div class="fg"><label>Niche</label><input type="text" id="inf-niche" placeholder="e.g. Real Estate, Lifestyle"/></div>
+      </div>
+      <div class="form-grid g3">
+        <div class="fg"><label>Followers</label><input type="text" id="inf-followers" placeholder="e.g. 150K"/></div>
+        <div class="fg"><label>Engagement Rate %</label><input type="number" id="inf-er" placeholder="3.5" step="0.1"/></div>
+        <div class="fg"><label>Cost ₹</label><input type="number" id="inf-cost" placeholder="25000"/></div>
+      </div>
+      <div class="fg"><label>Deliverables</label><input type="text" id="inf-deliverables" placeholder="e.g. 1 Reel + 2 Stories"/></div>
+      <div class="form-grid g2">
+        <div class="fg"><label>Status</label>
+          <select id="inf-status"><option>Prospect</option><option>Outreach Sent</option><option>Negotiating</option><option>Confirmed</option><option>Live</option><option>Completed</option></select>
+        </div>
+        <div class="fg"><label>Rating (1–5)</label><input type="number" id="inf-rating" placeholder="5" min="1" max="5"/></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addInfluencer()">Add Influencer →</button>
+        <button class="btn btn-ghost" onclick="closeModal('influencer-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cert Modal -->
+<div class="modal-overlay" id="cert-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Certification</h2><button class="modal-close" onclick="closeModal('cert-modal')">✕</button></div>
+    <div class="modal-form">
+      <div class="fg"><label>Certification / Course</label><input type="text" id="cert-name" placeholder="e.g. Google Analytics 4 Certification"/></div>
+      <div class="form-grid g3">
+        <div class="fg"><label>Platform</label><input type="text" id="cert-platform" placeholder="e.g. Google, Coursera"/></div>
+        <div class="fg"><label>Status</label>
+          <select id="cert-status"><option>In Progress</option><option>Completed</option><option>Planned</option></select>
+        </div>
+        <div class="fg"><label>Completed Date</label><input type="month" id="cert-date"/></div>
+      </div>
+      <div class="fg"><label>Relevance</label><input type="text" id="cert-relevance" placeholder="e.g. Required for GA4 reporting"/></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="addCert()">Add →</button>
+        <button class="btn btn-ghost" onclick="closeModal('cert-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── STORAGE ───────────────────────────────────────────
+const STORE_KEY='mmos_v1';
+let DB={campaigns:[],content:[],budget:[],projects:[],meetings:[],influencers:[],wins:[],certs:[],scores:{}};
+try{const s=localStorage.getItem(STORE_KEY);if(s)DB=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(DB));}catch(e){}}
+
+// ─── NAV ───────────────────────────────────────────────
+const pages=['dashboard','campaigns','content','budget','projects','meetings','influencers','wins','reports','career','scorecard'];
+const titles={dashboard:'Dashboard',campaigns:'Campaign Command',content:'Content OS',budget:'Budget Tracker',projects:'Project Manager',meetings:'Meeting HQ',influencers:'Influencer DB',wins:'Win Wall',reports:'Monthly Report',career:'Career Dashboard',scorecard:'CEO Scorecard'};
+function nav(page){
+  pages.forEach(p=>{
+    const el=document.getElementById('page-'+p);
+    if(el)el.classList.toggle('active',p===page);
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const navItems=document.querySelectorAll('.nav-item');
+  const idx=pages.indexOf(page);
+  if(navItems[idx])navItems[idx].classList.add('active');
+  document.getElementById('topbar-title').innerHTML=titles[page]+' <span>↗</span>';
+  window.scrollTo(0,0);
+  if(page==='content')renderContentCounts();
+  if(page==='budget')calcBudget();
+  if(page==='scorecard')renderScorecard();
+}
+
+// ─── MODAL ─────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
+
+// ─── TOAST ─────────────────────────────────────────────
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2500);}
+
+// ─── UTILS ─────────────────────────────────────────────
+const STATUS_COLORS={
+  'Live':'green','Active':'green','Completed':'blue','Published':'blue',
+  'Planning':'orange','In Progress':'orange','Scheduled':'accent',
+  'Paused':'muted','Cancelled':'red','At Risk':'red',
+  'Confirmed':'green','Prospect':'muted','Outreach Sent':'orange',
+  'Negotiating':'purple','Critical':'red','High':'orange','Medium':'accent','Low':'muted',
+  'Not Started':'muted','On Hold':'orange','Idea':'muted','Review':'purple',
+};
+function pill(text){const c=STATUS_COLORS[text]||'muted';return`<span class="pill ${c}">${text}</span>`;}
+function progressBar(pct){return`<div style="height:4px;background:var(--border2);border-radius:2px;width:80px;display:inline-block;vertical-align:middle;margin-right:6px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">${pct}%</span>`;}
+function delBtn(fn){return`<button onclick="${fn}" style="background:none;border:none;color:var(--muted2);cursor:pointer;font-size:13px;padding:3px 7px;border-radius:2px;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted2)'">✕</button>`;}
+
+// ─── CAMPAIGNS ─────────────────────────────────────────
+function addCampaign(){
+  const name=document.getElementById('cm-name').value.trim();
+  if(!name){toast('Enter a campaign name.');return;}
+  const budget=parseFloat(document.getElementById('cm-budget').value)||0;
+  const leads=parseFloat(document.getElementById('cm-leads').value)||0;
+  const cpl=leads>0?(budget/leads).toFixed(0):0;
+  DB.campaigns.push({name,obj:document.getElementById('cm-obj').value,audience:document.getElementById('cm-audience').value,budget,timeline:document.getElementById('cm-timeline').value,status:document.getElementById('cm-status').value,reach:document.getElementById('cm-reach').value||0,leads,cpl});
+  save();renderCampaigns();closeModal('campaign-modal');
+  document.getElementById('cm-name').value='';
+  toast('Campaign added ✓');
+}
+function renderCampaigns(){
+  const tb=document.getElementById('campaign-tbody');
+  if(!DB.campaigns.length){tb.innerHTML='<tr class="empty-row"><td colspan="10">No campaigns yet. Add your first campaign ↑</td></tr>';return;}
+  tb.innerHTML=DB.campaigns.map((c,i)=>`<tr>
+    <td style="font-weight:600">${c.name}</td><td>${c.obj}</td><td style="color:var(--muted)">${c.audience}</td>
+    <td>₹${Number(c.budget).toLocaleString('en-IN')}</td><td style="color:var(--muted)">${c.timeline}</td>
+    <td>${pill(c.status)}</td><td>${Number(c.reach).toLocaleString('en-IN')}</td>
+    <td style="color:var(--green)">${c.leads}</td>
+    <td style="color:var(--orange)">${c.cpl>0?'₹'+Number(c.cpl).toLocaleString('en-IN'):'—'}</td>
+    <td>${delBtn(`delCampaign(${i})`)}</td>
+  </tr>`).join('');
+}
+function delCampaign(i){DB.campaigns.splice(i,1);save();renderCampaigns();}
+
+// ─── CONTENT ───────────────────────────────────────────
+const CH_COLORS={Instagram:'var(--pink)',LinkedIn:'var(--blue)',YouTube:'var(--red)',Blog:'var(--purple)','Email Marketing':'var(--orange)'};
+function addContent(){
+  const topic=document.getElementById('co-topic').value.trim();
+  if(!topic){toast('Enter a content topic.');return;}
+  DB.content.push({topic,channel:document.getElementById('co-channel').value,format:document.getElementById('co-format').value,owner:document.getElementById('co-owner').value,date:document.getElementById('co-date').value,cta:document.getElementById('co-cta').value,status:document.getElementById('co-status').value,perf:document.getElementById('co-perf').value});
+  save();renderContent();renderContentCounts();closeModal('content-modal');
+  document.getElementById('co-topic').value='';document.getElementById('co-perf').value='';
+  toast('Content added ✓');
+}
+function renderContent(){
+  const tb=document.getElementById('content-tbody');
+  if(!DB.content.length){tb.innerHTML='<tr class="empty-row"><td colspan="9">No content planned yet. Add your first piece ↑</td></tr>';return;}
+  tb.innerHTML=DB.content.map((c,i)=>`<tr>
+    <td style="font-weight:600">${c.topic}</td>
+    <td><span style="color:${CH_COLORS[c.channel]||'var(--text)'};font-weight:600;font-size:11px;">${c.channel}</span></td>
+    <td style="color:var(--muted)">${c.format}</td><td>${c.owner||'—'}</td>
+    <td style="color:var(--muted)">${c.date||'—'}</td><td style="color:var(--muted)">${c.cta||'—'}</td>
+    <td>${pill(c.status)}</td><td style="color:var(--accent)">${c.perf||'—'}</td>
+    <td>${delBtn(`delContent(${i})`)}</td>
+  </tr>`).join('');
+}
+function renderContentCounts(){
+  const counts={Instagram:0,LinkedIn:0,YouTube:0,Blog:0,'Email Marketing':0};
+  DB.content.forEach(c=>{if(counts[c.channel]!==undefined)counts[c.channel]++;});
+  document.getElementById('ct-ig').textContent=counts.Instagram;
+  document.getElementById('ct-li').textContent=counts.LinkedIn;
+  document.getElementById('ct-yt').textContent=counts.YouTube;
+  document.getElementById('ct-bl').textContent=counts.Blog;
+  document.getElementById('ct-em').textContent=counts['Email Marketing'];
+}
+function delContent(i){DB.content.splice(i,1);save();renderContent();renderContentCounts();}
+
+// ─── BUDGET ────────────────────────────────────────────
+function addBudgetLine(){
+  DB.budget.push({channel:document.getElementById('bm-channel').value,allocated:parseFloat(document.getElementById('bm-allocated').value)||0,spent:parseFloat(document.getElementById('bm-spent').value)||0,notes:document.getElementById('bm-notes').value});
+  save();renderBudget();calcBudget();closeModal('budget-modal');
+  document.getElementById('bm-allocated').value='';document.getElementById('bm-spent').value='';document.getElementById('bm-notes').value='';
+  toast('Budget line added ✓');
+}
+function renderBudget(){
+  const tb=document.getElementById('budget-tbody');
+  if(!DB.budget.length){tb.innerHTML='<tr class="empty-row"><td colspan="6">No budget lines yet. Add channels ↑</td></tr>';return;}
+  tb.innerHTML=DB.budget.map((b,i)=>{
+    const util=b.allocated>0?Math.round((b.spent/b.allocated)*100):0;
+    const cls=util>100?'red':util>80?'orange':'green';
+    return`<tr>
+      <td style="font-weight:600">${b.channel}</td>
+      <td>₹${Number(b.allocated).toLocaleString('en-IN')}</td>
+      <td style="color:var(--red)">₹${Number(b.spent).toLocaleString('en-IN')}</td>
+      <td><span class="pill ${cls}">${util}%</span></td>
+      <td style="color:var(--muted)">${b.notes||'—'}</td>
+      <td>${delBtn(`delBudget(${i})`)}</td>
+    </tr>`;
+  }).join('');
+}
+function calcBudget(){
+  const total=DB.budget.reduce((s,b)=>s+b.allocated,0);
+  const spent=DB.budget.reduce((s,b)=>s+b.spent,0);
+  const util=total>0?Math.round((spent/total)*100):0;
+  const rem=total-spent;
+  const leads=parseFloat(document.getElementById('bud-leads').value)||0;
+  const rev=parseFloat(document.getElementById('bud-revenue-inp').value)||0;
+  const cpl=leads>0?(spent/leads).toFixed(0):0;
+  document.getElementById('bud-total').textContent='₹'+total.toLocaleString('en-IN');
+  document.getElementById('bud-spent').textContent='₹'+spent.toLocaleString('en-IN');
+  document.getElementById('bud-util').textContent=util+'%';
+  document.getElementById('bud-rem').textContent='₹'+rem.toLocaleString('en-IN');
+  document.getElementById('bud-cpl').textContent=cpl>0?'₹'+Number(cpl).toLocaleString('en-IN'):'—';
+}
+function delBudget(i){DB.budget.splice(i,1);save();renderBudget();calcBudget();}
+
+// ─── PROJECTS ──────────────────────────────────────────
+function addProject(){
+  const name=document.getElementById('pr-name').value.trim();
+  if(!name){toast('Enter a project name.');return;}
+  DB.projects.push({name,priority:document.getElementById('pr-priority').value,owner:document.getElementById('pr-owner').value,due:document.getElementById('pr-due').value,progress:parseInt(document.getElementById('pr-progress').value)||0,status:document.getElementById('pr-status').value,deps:document.getElementById('pr-deps').value,risks:document.getElementById('pr-risks').value});
+  save();renderProjects();closeModal('project-modal');
+  document.getElementById('pr-name').value='';document.getElementById('pr-deps').value='';document.getElementById('pr-risks').value='';
+  toast('Project added ✓');
+}
+function renderProjects(){
+  const tb=document.getElementById('project-tbody');
+  if(!DB.projects.length){tb.innerHTML='<tr class="empty-row"><td colspan="9">No projects yet. Add your first one ↑</td></tr>';return;}
+  tb.innerHTML=DB.projects.map((p,i)=>`<tr>
+    <td style="font-weight:600">${p.name}</td><td>${pill(p.priority)}</td>
+    <td>${p.owner||'—'}</td><td style="color:var(--muted)">${p.due||'—'}</td>
+    <td>${progressBar(p.progress)}</td>
+    <td style="color:var(--muted);font-size:11px;">${p.deps||'—'}</td>
+    <td style="color:var(--red);font-size:11px;">${p.risks||'—'}</td>
+    <td>${pill(p.status)}</td><td>${delBtn(`delProject(${i})`)}</td>
+  </tr>`).join('');
+}
+function delProject(i){DB.projects.splice(i,1);save();renderProjects();}
+
+// ─── MEETINGS ──────────────────────────────────────────
+function saveMeeting(){
+  const title=document.getElementById('meet-title').value.trim();
+  if(!title){toast('Enter a meeting title.');return;}
+  DB.meetings.push({title,date:document.getElementById('meet-date').value,stakeholders:document.getElementById('meet-stakeholders').value,agenda:document.getElementById('meet-agenda').value,decisions:document.getElementById('meet-decisions').value,actions:document.getElementById('meet-actions').value});
+  save();renderMeetings();
+  ['meet-title','meet-date','meet-stakeholders','meet-agenda','meet-decisions','meet-actions'].forEach(id=>document.getElementById(id).value='');
+  toast('Meeting saved ✓');
+}
+function renderMeetings(){
+  const tb=document.getElementById('meeting-tbody');
+  if(!DB.meetings.length){tb.innerHTML='<tr class="empty-row"><td colspan="6">No meetings logged yet.</td></tr>';return;}
+  tb.innerHTML=DB.meetings.map((m,i)=>`<tr>
+    <td style="color:var(--muted)">${m.date||'—'}</td>
+    <td style="font-weight:600">${m.title}</td>
+    <td style="color:var(--muted)">${m.stakeholders||'—'}</td>
+    <td style="font-size:11px;max-width:180px;">${m.decisions||'—'}</td>
+    <td style="font-size:11px;max-width:180px;color:var(--accent)">${m.actions||'—'}</td>
+    <td>${delBtn(`delMeeting(${i})`)}</td>
+  </tr>`).join('');
+}
+function delMeeting(i){DB.meetings.splice(i,1);save();renderMeetings();}
+
+// ─── INFLUENCERS ───────────────────────────────────────
+function addInfluencer(){
+  const name=document.getElementById('inf-name').value.trim();
+  if(!name){toast('Enter influencer name.');return;}
+  DB.influencers.push({name,niche:document.getElementById('inf-niche').value,followers:document.getElementById('inf-followers').value,er:document.getElementById('inf-er').value,cost:document.getElementById('inf-cost').value,deliverables:document.getElementById('inf-deliverables').value,status:document.getElementById('inf-status').value,rating:parseInt(document.getElementById('inf-rating').value)||0});
+  save();renderInfluencers();closeModal('influencer-modal');
+  document.getElementById('inf-name').value='';
+  toast('Influencer added ✓');
+}
+function renderInfluencers(){
+  const tb=document.getElementById('influencer-tbody');
+  if(!DB.influencers.length){tb.innerHTML='<tr class="empty-row"><td colspan="9">No influencers yet. Add your first creator ↑</td></tr>';return;}
+  tb.innerHTML=DB.influencers.map((inf,i)=>`<tr>
+    <td style="font-weight:600">${inf.name}</td>
+    <td style="color:var(--muted)">${inf.niche||'—'}</td>
+    <td style="color:var(--accent)">${inf.followers||'—'}</td>
+    <td style="color:var(--green)">${inf.er?inf.er+'%':'—'}</td>
+    <td>${inf.cost?'₹'+Number(inf.cost).toLocaleString('en-IN'):'—'}</td>
+    <td style="font-size:11px;color:var(--muted)">${inf.deliverables||'—'}</td>
+    <td>${pill(inf.status)}</td>
+    <td style="color:var(--accent)">${'★'.repeat(inf.rating)+'☆'.repeat(5-inf.rating)}</td>
+    <td>${delBtn(`delInfluencer(${i})`)}</td>
+  </tr>`).join('');
+}
+function delInfluencer(i){DB.influencers.splice(i,1);save();renderInfluencers();}
+
+// ─── WINS ──────────────────────────────────────────────
+function addWin(){
+  const text=document.getElementById('win-text').value.trim();
+  if(!text){toast('Enter your win.');return;}
+  DB.wins.push({text,cat:document.getElementById('win-cat').value,context:document.getElementById('win-context').value,date:new Date().toLocaleDateString('en-IN')});
+  save();renderWins();
+  document.getElementById('win-text').value='';document.getElementById('win-context').value='';
+  toast('Win added 🏆');
+}
+const CAT_COLORS={
+  'Lead Generation':'var(--green)','Cost Reduction':'var(--accent)',
+  'Revenue Impact':'var(--blue)','Campaign Performance':'var(--orange)',
+  'Team Management':'var(--purple)','Process Improvement':'var(--pink)',
+  'Brand Building':'var(--accent)','Other':'var(--muted)',
+};
+function renderWins(){
+  const grid=document.getElementById('wins-grid');
+  document.getElementById('wins-count-label').textContent=DB.wins.length+' win'+(DB.wins.length!==1?'s':'')+' logged';
+  if(!DB.wins.length){grid.innerHTML='<div class="win-empty"><p>No wins yet. Add your first one above.</p></div>';return;}
+  grid.innerHTML=DB.wins.map((w,i)=>`
+    <div class="win-card">
+      <div class="win-tag" style="color:${CAT_COLORS[w.cat]||'var(--accent)'};">${w.cat}</div>
+      <div class="win-text">${w.text}</div>
+      ${w.context?`<div class="win-context">${w.context}</div>`:''}
+      <div style="font-size:10px;color:var(--muted2);margin-top:8px;">${w.date}</div>
+      <button class="win-del" onclick="delWin(${i})">✕</button>
+    </div>`).join('');
+}
+function delWin(i){DB.wins.splice(i,1);save();renderWins();}
+function copyWins(){
+  if(!DB.wins.length){toast('No wins to copy.');return;}
+  const text=DB.wins.map((w,i)=>`${i+1}. ${w.text}${w.context?' ('+w.context+')':''}`).join('\n');
+  navigator.clipboard.writeText(text).then(()=>toast('Wins copied ✓'));
+}
+
+// ─── CERTS ─────────────────────────────────────────────
+function addCert(){
+  const name=document.getElementById('cert-name').value.trim();
+  if(!name){toast('Enter certification name.');return;}
+  DB.certs.push({name,platform:document.getElementById('cert-platform').value,status:document.getElementById('cert-status').value,date:document.getElementById('cert-date').value,relevance:document.getElementById('cert-relevance').value});
+  save();renderCerts();closeModal('cert-modal');
+  document.getElementById('cert-name').value='';
+  toast('Certification added ✓');
+}
+function renderCerts(){
+  const tb=document.getElementById('cert-tbody');
+  if(!DB.certs.length){tb.innerHTML='<tr class="empty-row"><td colspan="6">No certifications yet.</td></tr>';return;}
+  tb.innerHTML=DB.certs.map((c,i)=>`<tr>
+    <td style="font-weight:600">${c.name}</td>
+    <td style="color:var(--muted)">${c.platform||'—'}</td>
+    <td>${pill(c.status)}</td>
+    <td style="color:var(--muted)">${c.date||'—'}</td>
+    <td style="font-size:11px;color:var(--muted)">${c.relevance||'—'}</td>
+    <td>${delBtn(`delCert(${i})`)}</td>
+  </tr>`).join('');
+}
+function delCert(i){DB.certs.splice(i,1);save();renderCerts();}
+
+// ─── SCORECARD ─────────────────────────────────────────
+const SCORE_DIMS=[
+  {key:'execution',label:'Campaign Execution',sub:'Did campaigns launch on time and hit targets?'},
+  {key:'leads',label:'Lead Generation',sub:'Did you hit your lead volume and quality goals?'},
+  {key:'team',label:'Team Management',sub:'Did you lead, delegate and develop the team well?'},
+  {key:'budget',label:'Budget Management',sub:'Did you manage spend efficiently and show ROI?'},
+  {key:'stakeholders',label:'Stakeholder Management',sub:'Did you communicate, align and influence well?'},
+  {key:'brand',label:'Personal Branding',sub:'Did you build visibility and thought leadership?'},
+  {key:'learning',label:'Learning & Growth',sub:'Did you upskill, experiment and grow this month?'},
+];
+const SCORE_COLORS={
+  underpaid:'var(--red)',low:'var(--orange)',mid:'var(--accent)',high:'var(--green)',top:'var(--blue)'
+};
+function renderScorecard(){
+  if(!DB.scores)DB.scores={};
+  const section=document.getElementById('score-section');
+  section.innerHTML=SCORE_DIMS.map(d=>{
+    const val=DB.scores[d.key]||0;
+    const pct=(val/10)*100;
+    const col=val<=3?'var(--red)':val<=6?'var(--orange)':val<=8?'var(--accent)':'var(--green)';
+    return`<div class="score-item">
+      <div class="score-item-label">${d.label}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${d.sub}</div>
+      <div class="score-item-track"><div class="score-item-fill" id="sf-${d.key}" style="width:${pct}%;background:${col};"></div></div>
+      <div class="score-item-row">
+        <div class="score-item-val" id="sv-${d.key}" style="color:${col};">${val}</div>
+        <div class="score-item-max">/ 10</div>
+      </div>
+      <div class="score-range" id="sr-${d.key}">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button class="${val===n?'sel':''}" onclick="setScore('${d.key}',${n})">${n}</button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  updateTotalScore();
+}
+function setScore(key,val){
+  DB.scores[key]=val;save();
+  const total=SCORE_DIMS.reduce((s,d)=>s+(DB.scores[d.key]||0),0);
+  const max=SCORE_DIMS.length*10;
+  const pct=(val/10)*100;
+  const col=val<=3?'var(--red)':val<=6?'var(--orange)':val<=8?'var(--accent)':'var(--green)';
+  const sf=document.getElementById('sf-'+key);
+  const sv=document.getElementById('sv-'+key);
+  if(sf){sf.style.width=pct+'%';sf.style.background=col;}
+  if(sv){sv.textContent=val;sv.style.color=col;}
+  const sr=document.getElementById('sr-'+key);
+  if(sr){sr.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('sel',i+1===val));}
+  updateTotalScore();
+}
+function updateTotalScore(){
+  const total=SCORE_DIMS.reduce((s,d)=>s+(DB.scores[d.key]||0),0);
+  const max=SCORE_DIMS.length*10;
+  const pct=Math.round((total/max)*100);
+  const col=pct<40?'var(--red)':pct<60?'var(--orange)':pct<80?'var(--accent)':'var(--green)';
+  const label=pct<40?'Needs Work':pct<60?'Getting There':pct<80?'Solid Performance':'Exceptional';
+  document.getElementById('score-total').textContent=total+'/'+max;
+  document.getElementById('score-total').style.color=col;
+  document.getElementById('score-total-label').textContent=label;
+  document.getElementById('score-total-sub').textContent=`You scored ${total} out of ${max} possible points this month. ${pct>=80?'Outstanding work.':pct>=60?'Strong performance — keep pushing.':pct>=40?'There\'s room to level up.':'Time to reflect and recalibrate.'}`;
+  document.getElementById('score-total-fill').style.width=pct+'%';
+  document.getElementById('score-total-fill').style.background=col;
+}
+
+// ─── REPORTS ───────────────────────────────────────────
+function buildReportText(){
+  const month=document.getElementById('report-month').value;
+  const by=document.getElementById('report-by').value;
+  const sections=[
+    ['Campaign Performance',document.getElementById('rep-campaigns').value],
+    ['Lead Generation',document.getElementById('rep-leads').value],
+    ['Budget Utilisation',document.getElementById('rep-budget').value],
+    ['Channel Performance',document.getElementById('rep-channels').value],
+    ['Key Wins',document.getElementById('rep-wins').value],
+    ['Learnings',document.getElementById('rep-learnings').value],
+    ['Next Month Priorities',document.getElementById('rep-next').value],
+  ];
+  let out=`MARKETING MONTHLY REPORT\n${month?'Period: '+month+'\n':''}${by?'Prepared by: '+by+'\n':''}\n`;
+  sections.forEach(([title,val])=>{if(val.trim())out+=`${title.toUpperCase()}\n${val.trim()}\n\n`;});
+  return out.trim();
+}
+function copyReport(){
+  const text=buildReportText();
+  navigator.clipboard.writeText(text).then(()=>toast('Report copied ✓'));
+}
+function exportReport(){
+  const text=buildReportText();
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='marketing-report.txt';a.click();
+  toast('Report exported ✓');
+}
+
+// ─── TOPBAR DATE ───────────────────────────────────────
+const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now=new Date();
+document.getElementById('topbar-month').textContent=months[now.getMonth()]+' '+now.getFullYear();
+document.getElementById('meet-date').valueAsDate=new Date();
+document.getElementById('report-month').value=now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
+
+// ─── INIT ──────────────────────────────────────────────
+renderCampaigns();renderContent();renderContentCounts();
+renderBudget();calcBudget();renderProjects();
+renderMeetings();renderInfluencers();renderWins();renderCerts();
+renderScorecard();
+</script>
+</body>
+</html>
